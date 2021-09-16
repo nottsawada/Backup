@@ -1,16 +1,22 @@
 package Thanachai.BackupJson;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 
-    @Service
-    public class BackupService {
+@Service
+    public class BackupService  {
+//            @Override
+//            public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
+//                return new User("admin","admin",new ArrayList<>());
+//            }
 
         private final BackupRepository backupRepository;
 
@@ -178,6 +184,8 @@ import java.util.Optional;
 
             return new ResponseDescription("1","แก้ไขสำเร็จ");
         }
+
+
 
 
     }
