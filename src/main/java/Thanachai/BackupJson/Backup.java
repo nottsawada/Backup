@@ -29,6 +29,7 @@ public class Backup {
     @Column(name="primary_id")
     private Long primary_id;
 
+
     private Integer actDay;
     private Integer actMonth;
     private Integer actYear;

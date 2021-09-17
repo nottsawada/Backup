@@ -4,6 +4,8 @@ import Thanachai.BackupJson.Security.AuthenRequest;
 import Thanachai.BackupJson.Security.AuthenResponse;
 import Thanachai.BackupJson.Security.JwtUtil;
 import Thanachai.BackupJson.Security.MyUserDetailsService;
+import Thanachai.BackupJson.models.BackupRequest;
+import Thanachai.BackupJson.models.JwtRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -35,15 +37,15 @@ public class BackupController {
     @Autowired
     private MyUserDetailsService userDetailsService;
 
-    @GetMapping
-    public List<Backup> getBackups() {
+    @RequestMapping(value = "/getdata", method = RequestMethod.POST)
+    public List<Backup> getBackups(JwtRequest jwtRequest ) {
 
         return backupService.getBackups();
     }
 
-
     @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
     public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthenRequest authenRequest) throws  Exception{
+
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(authenRequest.getUsername(), authenRequest.getPassword())
@@ -54,17 +56,18 @@ public class BackupController {
         final UserDetails userDetails = userDetailsService
                 .loadUserByUsername(authenRequest.getUsername());
 
-
         final String jwt = jwtTokenUtil.generateToken(userDetails);
-
         return ResponseEntity.ok(new AuthenResponse(jwt));
         }
 
 
     @RequestMapping(value = "/addbackup", method = RequestMethod.POST)
-    public ResponseEntity<?> registerNewBackup(@RequestBody Backup backup){
-
-        return  ResponseEntity.ok( backupService.addNewBackup(backup)) ;
+    public ResponseEntity<?>  registerNewBackup(BackupRequest backupRequest){
+        if(backupRequest.getData_backup() == null){
+            return ResponseEntity.ok(new ResponseDescription("0","เพิ่มรายการไม่สำเร็จ  ! FAIL"));
+        }
+        Backup backup = backupRequest.getData_backup();
+        return ResponseEntity.ok( backupService.addNewBackup(backup)) ;
     }
 
     @RequestMapping(value = "/delete", method = RequestMethod.POST)

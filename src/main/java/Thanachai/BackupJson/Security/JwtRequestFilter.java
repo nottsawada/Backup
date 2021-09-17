@@ -1,6 +1,10 @@
 package Thanachai.BackupJson.Security;
 
 import Thanachai.BackupJson.BackupService;
+import Thanachai.BackupJson.models.JwtRequest;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.jersey.JerseyProperties;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -11,12 +15,14 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.WebApplicationInitializer;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.util.ContentCachingRequestWrapper;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedReader;
 import java.io.IOException;
 
 @Component
@@ -31,14 +37,26 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
         throws ServletException, IOException{
-        final String authorizationHeader = request.getHeader("Authorization");
+
+        HttpServletRequest currentRequest = (HttpServletRequest) request;
+        ContentCachingRequestWrapper wrappedRequest = new ContentCachingRequestWrapper(currentRequest);
+
+        JwtRequest jwts = new Gson().fromJson(wrappedRequest.getReader(), JwtRequest.class);
+
+        final String authorizationHeader = wrappedRequest.getHeader("Authorization");
+
+        System.out.println("TOKEN : "+jwts.getJwt());
 
         String username = null;
         String jwt = null;
 
-        if (authorizationHeader != null && authorizationHeader.startsWith("thanachai")){
-            jwt = authorizationHeader.substring(10);
+//        if (authorizationHeader != null && authorizationHeader.startsWith("thanachai")){
+        if (jwts.getJwt() != null){
+
+            //jwt = authorizationHeader.substring(10);
+            jwt = jwts.getJwt();
             username = jwtUtil.extractUsername(jwt);
+
         }
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication()== null){
@@ -51,7 +69,10 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                         SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
             }
         }
-        chain.doFilter(request, response);
+
+        chain.doFilter(wrappedRequest, response);
+
+
 
     }
 }
