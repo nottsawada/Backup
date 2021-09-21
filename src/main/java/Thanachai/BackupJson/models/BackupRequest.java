@@ -7,8 +7,6 @@ public class BackupRequest {
     private String jwt;
     private Backup data_backup;
 
-
-
     public String getJwt() {
         return jwt;
     }

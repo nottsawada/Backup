@@ -1,9 +1,6 @@
 package Thanachai.BackupJson;
 
-import org.hibernate.annotations.GenericGenerator;
-
 import javax.persistence.*;
-import java.sql.Date;
 
 
 @Entity
@@ -21,15 +18,12 @@ public class Backup {
         generator = "backup_sequence"
     )
 
-//    @Id
-//    @GenericGenerator(name = "backup_sequence", strategy = "Thanachai.BackupJson.generator.OrderIdGenerator")
-//    @GeneratedValue(generator = "backup_sequence")
 
 
     @Column(name="primary_id")
     private Long primary_id;
 
-
+    private String jwt;
     private Integer actDay;
     private Integer actMonth;
     private Integer actYear;
@@ -46,17 +40,16 @@ public class Backup {
     private String staff;
     private String timestamp;
 
+    public Backup(){
 
-
-
-    public Backup() {
     }
 
-    public Backup(Long primary_id, Integer actDay, Integer actMonth, Integer actYear,
-                  Integer action, Integer actmoney, Integer afmoney, Integer befmoney,
-                  String customerID, Integer item_list, String money_card, String pincode,
-                  String serial_card, String service_card, String staff, String timestamp) {
+    public Backup(Long primary_id, String jwt, Integer actDay, Integer actMonth, Integer actYear,
+                  Integer action, Integer actmoney, Integer afmoney, Integer befmoney, String customerID,
+                  Integer item_list, String money_card, String pincode, String serial_card, String service_card,
+                  String staff, String timestamp) {
         this.primary_id = primary_id;
+        this.jwt = jwt;
         this.actDay = actDay;
         this.actMonth = actMonth;
         this.actYear = actYear;
@@ -73,10 +66,12 @@ public class Backup {
         this.staff = staff;
         this.timestamp = timestamp;
     }
-    public Backup(Integer actDay, Integer actMonth, Integer actYear,
-                  Integer action, Integer actmoney, Integer afmoney, Integer befmoney,
-                  String customerID, Integer item_list, String money_card, String pincode,
-                  String serial_card, String service_card, String staff, String timestamp) {
+
+    public Backup(String jwt, Integer actDay, Integer actMonth, Integer actYear,
+                  Integer action, Integer actmoney, Integer afmoney, Integer befmoney, String customerID,
+                  Integer item_list, String money_card, String pincode, String serial_card, String service_card,
+                  String staff, String timestamp) {
+        this.jwt = jwt;
         this.actDay = actDay;
         this.actMonth = actMonth;
         this.actYear = actYear;
@@ -93,6 +88,7 @@ public class Backup {
         this.staff = staff;
         this.timestamp = timestamp;
     }
+
 
     public Long getPrimary_id() {
         return primary_id;
@@ -102,7 +98,17 @@ public class Backup {
         this.primary_id = primary_id;
     }
 
-    public Integer getActDay() {return actDay;}
+    public String getJwt() {
+        return jwt;
+    }
+
+    public void setJwt(String jwt) {
+        this.jwt = jwt;
+    }
+
+    public Integer getActDay() {
+        return actDay;
+    }
 
     public void setActDay(Integer actDay) {
         this.actDay = actDay;
@@ -156,12 +162,12 @@ public class Backup {
         this.befmoney = befmoney;
     }
 
-    public String getCustomerId() {
+    public String getCustomerID() {
         return customerID;
     }
 
-    public void setCustomerId(String customerId) {
-        this.customerID = customerId;
+    public void setCustomerID(String customerID) {
+        this.customerID = customerID;
     }
 
     public Integer getItem_list() {
@@ -221,24 +227,25 @@ public class Backup {
     }
 
     @Override
-    public String toString() {
-        return "backup{" +
+    public String toString(){
+        return "Backup{" +
                 "primary_id=" + primary_id +
-                ", actDay=" + actDay +
-                ", actMonth=" + actMonth +
-                ", actYear=" + actYear +
-                ", action=" + action +
-                ", actmoney=" + actmoney +
-                ", afmoney=" + afmoney +
-                ", befmoney=" + befmoney +
-                ", customerID='" + customerID + '\'' +
-                ", item_list=" + item_list +
-                ", money_card='" + money_card + '\'' +
-                ", pincode='" + pincode + '\'' +
-                ", serial_card='" + serial_card + '\'' +
-                ", service_card='" + service_card + '\'' +
-                ", staff='" + staff + '\'' +
-                ", timestamp=" + timestamp +
+                ", jwt='" + jwt +'\'' +
+                "actDay=" + actDay +
+                "actMonth=" + actMonth +
+                "actYear=" + actYear +
+                "action=" + action +
+                "actmoney=" + actmoney +
+                "afmoney=" + afmoney +
+                "befmoney=" + befmoney +
+                "customerID='" + customerID +'\'' +
+                "item_list=" + item_list +
+                "money_card='" + money_card +'\'' +
+                "pincode='" + pincode +'\'' +
+                "serial_card='" + serial_card +'\'' +
+                "service_card='" + service_card +'\'' +
+                "staff='" + staff +'\'' +
+                "timestamp='" + timestamp +'\'' +
                 '}';
     }
 }
